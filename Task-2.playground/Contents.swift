@@ -11,11 +11,11 @@ import UIKit
 
 // --- User & Notifications domain (all classes, type/priority as strings) ---
 
-class User {
-    var id: String
-    var name: String
-    var email: String
-    var role: String  // "admin", "member", "guest"
+struct User {
+    let id: String
+    let name: String
+    let email: String
+    let role: String  // "admin", "member", "guest"
 
     init(id: String, name: String, email: String, role: String) {
         self.id = id
@@ -44,13 +44,13 @@ class User {
     }
 }
 
-class Notification {
-    var id: String
-    var title: String
-    var body: String
-    var type: String   // "email", "push", "sms"
-    var priority: String  // "low", "medium", "high"
-    var read: Bool
+struct Notification {
+    let id: String
+    let title: String
+    let body: String
+    let type: String   // "email", "push", "sms"
+    let priority: String  // "low", "medium", "high"
+    let read: Bool
 
     init(id: String, title: String, body: String, type: String, priority: String, read: Bool) {
         self.id = id
@@ -93,10 +93,10 @@ class Notification {
     }
 }
 
-class NotificationPreference {
-    var userId: String
-    var type: String   // "email", "push", "sms"
-    var enabled: Bool
+struct NotificationPreference {
+    let userId: String
+    let type: String   // "email", "push", "sms"
+    let enabled: Bool
 
     init(userId: String, type: String, enabled: Bool) {
         self.userId = userId
@@ -159,7 +159,12 @@ class NotificationManager {
         self.formatter = NotificationFormatter()
     }
 
-    func sendNotification(to user: User, notification: Notification, onSent: (String) -> Void, onError: (String) -> Void) {
+    func sendNotification(
+        to user: User,
+        notification: Notification,
+        onSent: (String) -> Void,
+        onError: (String) -> Void
+    ) {
         let (valid, message) = validator.validateUser(user: user)
         if valid {
             let formatted = formatter.formatNotification(notification: notification)

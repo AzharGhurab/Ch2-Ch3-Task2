@@ -10,14 +10,20 @@ import UIKit
 // ============================================
 
 // --- User & Notifications domain (all classes, type/priority as strings) ---
+//Refactor: Add Enums
+enum RoleType{
+    case admin
+    case member
+    case guest
+}
 
 struct User {
     let id: String
     let name: String
     let email: String
-    let role: String  // "admin", "member", "guest"
+    let role: RoleType  // "admin", "member", "guest"
 
-    init(id: String, name: String, email: String, role: String) {
+    init(id: String, name: String, email: String, role: RoleType) {
         self.id = id
         self.name = name
         self.email = email
@@ -25,25 +31,30 @@ struct User {
     }
 
     func getRoleDisplayName() -> String {
-        if role == "admin" {
-            return "Administrator"
-        } else if role == "member" {
-            return "Member"
-        } else if role == "guest" {
-            return "Guest"
-        } else {
-            return "Unknown"
+//        if role == "admin" {
+//            return "Administrator"
+//        } else if role == "member" {
+//            return "Member"
+//        } else if role == "guest" {
+//            return "Guest"
+//        } else {
+//            return "Unknown"
+//        }
+        switch role {
+        case .admin:
+           return "admin"
+        case .member:
+            return"member"
+        case .guest:
+            return"guest"
         }
+        
     }
 
     func canManageUsers() -> Bool {
-        if role == "admin" {
-            return true
-        }
-        return false
-    }
-}
-
+           return role == .admin
+       }
+   }
 struct Notification {
     let id: String
     let title: String
@@ -127,9 +138,9 @@ class UserValidator {
         if user.email.isEmpty {
             return (false, "Email is required.")
         }
-        if user.role != "admin" && user.role != "member" && user.role != "guest" {
-            return (false, "Invalid role.")
-        }
+//        if user.role != "admin" && user.role != "member" && user.role != "guest" {
+//            return (false, "Invalid role.")
+//        }
         return (true, "Valid")
     }
 }
@@ -189,7 +200,7 @@ class NotificationManager {
 
 // --- Usage / Demo ---
 
-let user = User(id: "U1", name: "Bob", email: "bob@example.com", role: "member")
+let user = User(id: "U1", name: "Bob", email: "bob@example.com", role: .member)
 let notification = Notification(id: "N1", title: "Reminder", body: "Meeting at 3pm", type: "push", priority: "high", read: false)
 
 let manager = NotificationManager()

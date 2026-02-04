@@ -27,18 +27,18 @@ struct User {
     let name: String
     let email: String
     let role: RoleType  // "admin", "member", "guest"
-
+    
     init(id: String, name: String, email: String, role: RoleType) {
         self.id = id
         self.name = name
         self.email = email
         self.role = role
     }
-
+    
     func getRoleDisplayName() -> String {
         switch role {
         case .admin:
-           return "admin"
+            return "admin"
         case .member:
             return"member"
         case .guest:
@@ -46,20 +46,30 @@ struct User {
         }
         
     }
-
+    
     func canManageUsers() -> Bool {
-           return role == .admin
-       }
-   }
+        return role == .admin
+    }
+}
+enum Type {
+  case email
+  case push
+  case sms
+}
+enum Priority{
+    case low
+    case medium
+    case high
+}
 struct Notification {
     let id: String
     let title: String
     let body: String
-    let type: String   // "email", "push", "sms"
-    let priority: String  // "low", "medium", "high"
+    let type: Type   // "email", "push", "sms"
+    let priority: Priority  // "low", "medium", "high"
     let read: Bool
-
-    init(id: String, title: String, body: String, type: String, priority: String, read: Bool) {
+    
+    init(id: String, title: String, body: String, type: Type, priority: Priority, read: Bool) {
         self.id = id
         self.title = title
         self.body = body
@@ -67,33 +77,34 @@ struct Notification {
         self.priority = priority
         self.read = read
     }
-
+    
     func getTypeLabel() -> String {
-        if type == "email" {
-            return "Email"
-        } else if type == "push" {
-            return "Push"
-        } else if type == "sms" {
-            return "SMS"
-        } else {
-            return "Other"
+        switch type {
+        case .email:
+            return "email"
+        case .push:
+            return"push"
+        case .sms:
+            return"sms"
+            
         }
+        
     }
-
+    
     func getPriorityLabel() -> String {
-        if priority == "low" {
-            return "Low"
-        } else if priority == "medium" {
-            return "Medium"
-        } else if priority == "high" {
-            return "High"
-        } else {
-            return "Unknown"
+        switch priority {
+        case .low:
+            return "low"
+        case .medium:
+            return"medium"
+        case .high:
+            return"high"
+            
         }
     }
-
+    
     func isUrgent() -> Bool {
-        if priority == "high" {
+        if priority == .high {
             return true
         }
         return false
@@ -104,13 +115,13 @@ struct NotificationPreference {
     let userId: String
     let type: String   // "email", "push", "sms"
     let enabled: Bool
-
+    
     init(userId: String, type: String, enabled: Bool) {
         self.userId = userId
         self.type = type
         self.enabled = enabled
     }
-
+    
     func getTypeLabel() -> String {
         if type == "email" {
             return "Email"
@@ -134,7 +145,7 @@ class UserValidator {
         if user.email.isEmpty {
             return (false, "Email is required.")
         }
-
+        
         return (true, "Valid")
     }
 }
@@ -151,19 +162,19 @@ extension Notification: Formattable {
     }
 }
 
-    func formatUser(user: User) -> String {
-        return user.name + " (" + user.email + ") - " + user.getRoleDisplayName()
-    }
+func formatUser(user: User) -> String {
+    return user.name + " (" + user.email + ") - " + user.getRoleDisplayName()
+}
 
 
 // --- Manager using callbacks instead of closures ---
 class NotificationManager {
     var validator: UserValidator
-
+    
     init() {
         self.validator = UserValidator()
     }
-    
+    //    Refactor: Add Closures
     func sendNotification(
         to user: User,
         notification: Notification,
@@ -178,7 +189,7 @@ class NotificationManager {
             onError(message)
         }
     }
-
+    
     func getAllNotificationSummaries(notifications: [Notification]) -> String {
         var result = ""
         for i in 0..<notifications.count {
@@ -196,15 +207,15 @@ class NotificationManager {
 // --- Usage / Demo ---
 //Refactor: Add Closures
 let user = User(id: "U1", name: "Bob", email: "bob@example.com", role: .member)
-let notification = Notification(id: "N1", title: "Reminder", body: "Meeting at 3pm", type: "push", priority: "high", read: false)
+let notification = Notification(id: "N1", title: "Reminder", body: "Meeting at 3pm", type:.push, priority: .high, read: false)
 
 let manager = NotificationManager()
 manager.sendNotification(to: user,notification: notification,onSent: { message in
-        print("Success: " + message)
-    },
-    onError: { error in
-        print("Error: " + error)
-    }
+    print("Success: " + message)
+},
+                         onError: { error in
+    print("Error: " + error)
+}
 )
 
 print(user.getRoleDisplayName())

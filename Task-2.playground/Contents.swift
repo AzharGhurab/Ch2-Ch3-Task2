@@ -194,15 +194,12 @@ class NotificationManager {
 
 
 // --- Usage / Demo ---
-
+//Refactor: Add Closures
 let user = User(id: "U1", name: "Bob", email: "bob@example.com", role: .member)
 let notification = Notification(id: "N1", title: "Reminder", body: "Meeting at 3pm", type: "push", priority: "high", read: false)
 
 let manager = NotificationManager()
-manager.sendNotification(
-    to: user,
-    notification: notification,
-    onSent: { message in
+manager.sendNotification(to: user,notification: notification,onSent: { message in
         print("Success: " + message)
     },
     onError: { error in

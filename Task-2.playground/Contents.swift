@@ -10,6 +10,11 @@ import UIKit
 // ============================================
 
 // --- User & Notifications domain (all classes, type/priority as strings) ---
+//Refactor: Add Protocols
+
+protocol Formattable {
+    func formattedText() -> String
+}
 //Refactor: Add Enums
 enum RoleType{
     case admin
@@ -31,15 +36,6 @@ struct User {
     }
 
     func getRoleDisplayName() -> String {
-//        if role == "admin" {
-//            return "Administrator"
-//        } else if role == "member" {
-//            return "Member"
-//        } else if role == "guest" {
-//            return "Guest"
-//        } else {
-//            return "Unknown"
-//        }
         switch role {
         case .admin:
            return "admin"
@@ -138,38 +134,36 @@ class UserValidator {
         if user.email.isEmpty {
             return (false, "Email is required.")
         }
-//        if user.role != "admin" && user.role != "member" && user.role != "guest" {
-//            return (false, "Invalid role.")
-//        }
+
         return (true, "Valid")
     }
 }
 
-class NotificationFormatter {
-    func formatNotification(notification: Notification) -> String {
-        var text = "[" + notification.getTypeLabel() + "] "
-        text = text + notification.title + "\n"
-        text = text + notification.body + "\n"
-        text = text + "Priority: " + notification.getPriorityLabel()
+
+//Refactor: Add Extensions
+extension Notification: Formattable {
+    func formattedText() -> String {
+        var text = "[" + getTypeLabel() + "] "
+        text += title + "\n"
+        text += body + "\n"
+        text += "Priority: " + getPriorityLabel()
         return text
     }
+}
 
     func formatUser(user: User) -> String {
         return user.name + " (" + user.email + ") - " + user.getRoleDisplayName()
     }
-}
+
 
 // --- Manager using callbacks instead of closures ---
-
 class NotificationManager {
     var validator: UserValidator
-    var formatter: NotificationFormatter
 
     init() {
         self.validator = UserValidator()
-        self.formatter = NotificationFormatter()
     }
-
+    
     func sendNotification(
         to user: User,
         notification: Notification,
@@ -178,7 +172,7 @@ class NotificationManager {
     ) {
         let (valid, message) = validator.validateUser(user: user)
         if valid {
-            let formatted = formatter.formatNotification(notification: notification)
+            let formatted = notification.formattedText()
             onSent("Sent to " + user.name + ": " + formatted)
         } else {
             onError(message)
@@ -197,6 +191,7 @@ class NotificationManager {
         return result
     }
 }
+
 
 // --- Usage / Demo ---
 

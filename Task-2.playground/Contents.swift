@@ -116,24 +116,24 @@ struct Notification {
 
 struct NotificationPreference {
     let userId: String
-    let type: String   // "email", "push", "sms"
+    let type: NotificationType   // "email", "push", "sms"
     let enabled: Bool
     
-    init(userId: String, type: String, enabled: Bool) {
+    init(userId: String, type: NotificationType, enabled: Bool) {
         self.userId = userId
         self.type = type
         self.enabled = enabled
     }
     
     func getTypeLabel() -> String {
-        if type == "email" {
-            return "Email"
-        } else if type == "push" {
-            return "Push"
-        } else if type == "sms" {
-            return "SMS"
-        } else {
-            return "Other"
+        switch type {
+        case .email:
+            return "email"
+        case .push:
+            return"push"
+        case .sms:
+            return"sms"
+            
         }
     }
 }

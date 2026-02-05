@@ -10,6 +10,7 @@ import UIKit
 // ============================================
 
 // --- User & Notifications domain (all classes, type/priority as strings) ---
+
 //Refactor: Add Protocols
 
 protocol Formattable {
@@ -53,9 +54,9 @@ struct User {
 }
 //Refactor: Add Enums1
 enum NotificationType {
-  case email
-  case push
-  case sms
+    case email
+    case push
+    case sms
 }
 //Refactor: Add Enums2
 enum Priority{
@@ -212,10 +213,12 @@ let user = User(id: "U1", name: "Bob", email: "bob@example.com", role: .member)
 let notification = Notification(id: "N1", title: "Reminder", body: "Meeting at 3pm", type:.push, priority: .high, read: false)
 
 let manager = NotificationManager()
-manager.sendNotification(to: user,notification: notification,onSent: { message in
+manager.sendNotification(to: user,notification: notification,
+                         
+    onSent: { message in
     print("Success: " + message)
 },
-                         onError: { error in
+    onError: { error in
     print("Error: " + error)
 }
 )

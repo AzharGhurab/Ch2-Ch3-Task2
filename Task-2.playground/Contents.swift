@@ -51,11 +51,13 @@ struct User {
         return role == .admin
     }
 }
-enum Type {
+//Refactor: Add Enums1
+enum NotificationType {
   case email
   case push
   case sms
 }
+//Refactor: Add Enums2
 enum Priority{
     case low
     case medium
@@ -65,11 +67,11 @@ struct Notification {
     let id: String
     let title: String
     let body: String
-    let type: Type   // "email", "push", "sms"
+    let type: NotificationType   // "email", "push", "sms"
     let priority: Priority  // "low", "medium", "high"
     let read: Bool
     
-    init(id: String, title: String, body: String, type: Type, priority: Priority, read: Bool) {
+    init(id: String, title: String, body: String, type: NotificationType, priority: Priority, read: Bool) {
         self.id = id
         self.title = title
         self.body = body
